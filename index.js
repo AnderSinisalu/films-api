@@ -15,10 +15,7 @@ const films = [
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 app.use(express.json());
 
-app.get('/films', (req, res) => {
-    res.send(films)
-})
-
+app.get('/films', (req, res) => { res.send(films)})
 app.get('/films/:id', (req, res) => {
 
     if(typeof films[req.params.id - 1] === 'undefined') {
@@ -45,6 +42,7 @@ app.post('/films', (req, res)=> {
         FilmLength: req.body.FilmLength
     }
     films.push(film);
+
     res.status(201)
         .location(`${getBaseURL(req)}/films/${films.length}`)
         .send(film);
@@ -60,8 +58,45 @@ app.delete('/films/:id', (req, res) => {
  
 })
 
+app.put('/films/:id', (req, res) => {
+    const film = getFilm(req, res);
+    if (!film) {
+        return res.status(404).send({error: "Film not found"});
+    }
+    if (!req.body.FilmTitle || 
+        !req.body.ReleaseYear ||
+        !req.body.FileLength) 
+    {
+        return res.status(400).send({error: "One or multiple parameters are missing"});
+    }
+        film.FilmID = req.body.FilmID,
+        film.FilmTitle = req.body.FilmTitle,
+        film.ReleaseYear = req.body.ReleaseYear,
+        film.FilmLength = req.body.FilmLength
+    
+    films.splice((req.body.FilmID-1), 1, film);
+
+    res.status(201)
+        .location(`${getBaseURL(req)}/films/${films.id}`)
+        .send(film);
+
+})
+
 app.listen(port, () => {console.log(`Api on saadaval aadressil: http://localhost:${port}`);});
 
 function getBaseURL(req) {
     return req.connection && req.connection.encrypted ? "https" : "http" + `://${req.headers.host}`;
+}
+function getFilm(req, res) {
+    const idNumber = parseInt(req.params.FilmID);
+    if (isNaN(idNumber)) {
+        res.status(400).send({error:"Invalid Film ID"});
+        return null;
+    }
+    const film = films.find(g => g.FilmID === idNumber);
+    if (!film) {
+        res.status(404).send({error: "Film not found"});
+        return null;
+    }
+    return film;
 }

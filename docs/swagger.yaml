@@ -77,6 +77,35 @@ paths:
             operationId: id
             summary: Returns full details of film
             description: Returns full details of a given id film
+        put:
+            tags:
+                - update
+            responses:
+                '400':
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/error'
+                            examples:
+                                Missing parameters:
+                                    value:
+                                        -
+                                            error: One or multiple parameters are missing
+                    description: Required parameters to modify the film are missing
+                '404':
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/error'
+                            examples:
+                                Film not found:
+                                    value:
+                                        -
+                                            error: Film not found
+                    description: Film that is being modified does not exist
+            operationId: id
+            summary: Updates film details
+            description: 'Returns updated film, when updating is succsessful'
         delete:
             requestBody:
                 description: delete-game
