@@ -11,6 +11,44 @@ const films = [
     {FilmID: 3, FilmTitle:"Fight Club", ReleaseYear: 1999, FileLength: "2h19m"},
     {FilmID: 4, FilmTitle:"Forrest Gump", ReleaseYear: 1994, FilmLength: "2h22m"}
 ]
+const users = [
+    {
+        ID: 1,
+        Username: "ShadowHunter123",
+        Firstname: "Liam",
+        Lastname: "Anderson",
+        Email: "liam.anderson@example.com",
+        SecureLevel: 0,
+        LevelKey: "0-0"
+    },
+    {
+        ID: 2,
+        Username: "CrimsonBlade",
+        Firstname: "Sophia",
+        Lastname: "Miller",
+        Email: "sophia.miller@example.com",
+        SecureLevel: 0,
+        LevelKey: "0-1"
+    },
+    {
+        ID: 2,
+        Username: "PhantomWolf",
+        Firstname: "Ethan",
+        Lastname: "Carter",
+        Email: "ethan.carter@example.com",
+        SecureLevel: 0,
+        LevelKey: "1-0"
+    },
+    {
+        ID: 3,
+        Username: "Admin",
+        Firstname: "Admin",
+        Lastname: "Istraator",
+        Email: "Andmin@example.com",
+        SecureLevel: 1,
+        LevelKey: "0-0"
+    },
+];
 
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 app.use(express.json());
@@ -82,6 +120,7 @@ app.put('/films/:id', (req, res) => {
 
 })
 
+app.get("/users", (req, res) => { res.status(200).send(users)})
 app.listen(port, () => {console.log(`Api on saadaval aadressil: http://localhost:${port}`);});
 
 function getBaseURL(req) {
