@@ -50,6 +50,16 @@ app.post('/films', (req, res)=> {
         .send(film);
 })
 
+app.delete('/films/:id', (req, res) => {
+    if(typeof films[req.params.id -1] === 'undefined') {
+        return res.status(404).send({error: "Film not found"});
+    }
+    films.splice(req.params.id-1, 1);
+
+    res.status(204).send({error: "No Content"});
+ 
+})
+
 app.listen(port, () => {console.log(`Api on saadaval aadressil: http://localhost:${port}`);});
 
 function getBaseURL(req) {

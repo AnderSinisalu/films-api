@@ -77,6 +77,38 @@ paths:
             operationId: id
             summary: Returns full details of film
             description: Returns full details of a given id film
+        delete:
+            requestBody:
+                description: delete-game
+                required: false
+            tags:
+                - delete
+            responses:
+                '204':
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/error'
+                            examples:
+                                Film was deleted:
+                                    value:
+                                        -
+                                            error: no content
+                    description: 'returned error, in case deletion was successful'
+                '404':
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/error'
+                            examples:
+                                Film with this ID was not found:
+                                    value:
+                                        -
+                                            error: Film not found
+                    description: Film with this id was not found
+            operationId: id
+            summary: Deletes a film
+            description: Deletes a film on the given ID
 components:
     schemas:
         error:
