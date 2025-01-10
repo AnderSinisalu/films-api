@@ -27,7 +27,7 @@ db.films = require("./models/film")(sequelize, DataTypes);
 db.users = require("./models/User")(sequelize, DataTypes);
 
 const sync = (async () => {
-    await sequelize.sync({ alter: true});
+    await sequelize.sync({ force: true});
     console.log("models have been synchronised successfully")
 });
 
