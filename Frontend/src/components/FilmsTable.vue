@@ -12,12 +12,14 @@ export default {
         <thead class="table-dark">
             <tr>
                 <th>FilmTitle</th>
+                <th>ReleaseYear</th>
                 <th>FilmLength</th>
             </tr>
         </thead>
         <tbody>
             <tr v-for="item in items" :key="item.FilmID">
                 <td>{{ item.FilmTitle }}</td>
+                <td>{{ item.ReleaseYear }}</td>
                 <td>{{ item.FilmLength }}</td>
             </tr>
         </tbody>

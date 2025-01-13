@@ -6,7 +6,7 @@ exports.getAll = async (req, res) => {
     console.log(users)
     res
     .status(200)
-    .send(users.map(({ID, Username}) => {return {ID, Username}}))
+    .send(users.map(({ID, Username, Lastname, Email, SecureLevel, LevelKey}) => {return {ID, Username, Lastname, Email, SecureLevel, LevelKey}}))
 }
 
 exports.getById = async (req, res) => {
@@ -17,52 +17,72 @@ exports.getById = async (req, res) => {
 
 exports.create = async (req, res) => {
     if (!req.body.Username ||
-        !req.body.Firstname||
-        !req.body.Lastname||
-        !req.body.Email||
-        !req.body.SecureLevel||
-        !req.body.LevelKey) 
-    {
-        return res.status(400).send({error: "One or multiple parameters are missing"});
+        !req.body.Firstname ||
+        !req.body.Lastname ||
+        !req.body.Email) {
+        return res.status(400).send({ error: "One or multiple parameters are missing" });
     }
-    let newUser =
-    {
-        UserName: req.body.Username,
+
+    const newUser = {
+        Username: req.body.Username,
         Firstname: req.body.Firstname,
         Lastname: req.body.Lastname,
         Email: req.body.Email,
-        SecureLevel: req.body.SecureLevel,
-        LevelKey: req.body.LevelKey,
+        SecureLevel: req.body.SecureLevel || 0,
+        LevelKey: req.body.LevelKey || "0-0",
+    };
+
+    try {
+        const createdUser = await db.users.create(newUser);
+
+        res.status(201)
+            .location(`${Utils.getBaseURL(req)}/users/${createdUser.ID}`)
+            .send({ ID: createdUser.ID });
+    } catch (error) {
+        console.error(error);
+
+        res.status(500).send({ error: "Error creating user" });
     }
-    const createdUser = await db.users.create(newUser);
-    res.status(201)
-    .location(`${Utils.getBaseURL(req)}/users/${createdUser.ID}`)
-    .send(createdUser.ID);
-}
+};
+
 
 exports.editById = async (req, res) => {
-    const user = await getUser(req, res);
-    if (!user) { return };
-    if (!req.body.Username ||
-        !req.body.Firstname||
-        !req.body.Lastname||
-        !req.body.Email||
-        !req.body.SecureLevel||
-        !req.body.LevelKey) 
-    {
-        return res.status(400).send({error: "One or multiple parameters are missing"});
+    const user = await getUser(req, res); // Use the getUser function
+
+    if (!user) {
+        return; // If getUser returned null, an error response has already been sent
     }
-    user.UserName = req.body.Username
-    user.Firstname = req.body.Firstname
-    user.Lastname = req.body.Lastname
-    user.Email = req.body.Email
-    user.SecureLevel = req.body.SecureLevel
-    user.LevelKey = req.body.LevelKey
-    await user.save();
-    res.status(201)
-        .location(`${getBaseURL(req)}/users/${user.ID}`)
-        .send(user);
-}
+
+    // Validate required fields in the request body
+    if (!req.body.Username ||
+        !req.body.Firstname ||
+        !req.body.Lastname ||
+        !req.body.Email ||
+        !req.body.SecureLevel ||
+        !req.body.LevelKey) {
+        return res.status(400).send({ error: "One or multiple parameters are missing" });
+    }
+
+    try {
+        // Update the user's fields
+        user.Username = req.body.Username;
+        user.Firstname = req.body.Firstname;
+        user.Lastname = req.body.Lastname;
+        user.Email = req.body.Email;
+        user.SecureLevel = req.body.SecureLevel;
+        user.LevelKey = req.body.LevelKey;
+
+        // Save the changes
+        await user.save();
+
+        // Send the updated user as the response
+        res.status(200).send(user);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ error: "Error updating user" });
+    }
+};
+
 
 exports.deleteById = async (req,res) => {
     const user = await getUser(req, res);
@@ -70,3 +90,23 @@ exports.deleteById = async (req,res) => {
     await user.destroy();
     res.status(204).send({error: "No Content"});
 }
+
+const getUser = async (req, res) => {
+    const userId = req.params.id;
+
+    try {
+        // Find the user by ID
+        const user = await db.users.findByPk(userId);
+
+        if (!user) {
+            res.status(404).send({ error: `User with ID ${userId} not found` });
+            return null;
+        }
+
+        return user;
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ error: "Error retrieving user" });
+        return null;
+    }
+};

@@ -10,22 +10,22 @@ export default {
 
         <tr>
             <th>ID</th>
-            <td>{{GameID}}</td>
+            <td>{{FilmID}}</td>
         </tr>
 
         <tr>
-            <th>Game name</th>
-            <td><input :value="GameName" @input="$emit('update:FilmTitle',$event.target.value)"></td>
+            <th>Film Title</th>
+            <td><input :value="FilmTitle" @input="$emit('update:FilmTitle',$event.target.value)"></td>
         </tr>
 
         <tr>
-            <th>European release date</th>
-            <td><input :value="ReleaseDateEU" @input="$emit('update:ReleaseYear',$event.target.value)"></td>
+            <th>Film release year</th>
+            <td><input :value="ReleaseYear" @input="$emit('update:ReleaseYear',$event.target.value)"></td>
         </tr>
 
         <tr>
-            <th>Score of review at the time</th>
-            <td>><input :value="ReviewScore" @input="$emit('update:FilmLength',$event.target.value)"></td>
+            <th>Total film length</th>
+            <td>><input :value="FilmLength" @input="$emit('update:FilmLength',$event.target.value)"></td>
         </tr>
 
     </table>
