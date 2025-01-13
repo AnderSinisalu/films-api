@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.INTEGER
             },
             FilmLength: {
-                type: DataTypes.STRING
+                type: DataTypes.INTEGER
             }
         }
     );

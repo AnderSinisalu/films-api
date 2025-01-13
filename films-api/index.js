@@ -22,7 +22,7 @@ app.get("/", (req, res) => {
     res.send(`Server running. Documentation at <a href="http://${host}:${port}/docs">/docs</a>`);
 })
 
-require("./routes/Routes")(app);
+require("./routes/filmRoutes")(app);
 require("./routes/userRoutes")(app);
 
 

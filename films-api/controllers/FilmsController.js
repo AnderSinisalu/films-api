@@ -6,7 +6,7 @@ exports.getAll = async (req, res) => {
     console.log(films)
     res
     .send(films
-        .map(({FilmID, FilmTitle}) => {return {FilmID, FilmTitle}}))
+        .map(({FilmID, FilmTitle, ReleaseYear, FilmLength}) => {return {FilmID, FilmTitle, ReleaseYear, FilmLength}}))
 }
 
 exports.getById = async (req, res) => {
@@ -18,19 +18,28 @@ exports.getById = async (req, res) => {
 exports.create = async (req, res) => {
     if (!req.body.FilmTitle || 
         !req.body.ReleaseYear ||
-        !req.body.FilmLength) 
-    {   return res.status(400).send({error: "One or multiple parameters are missing"});    }
+        !req.body.FilmLength) {
+        return res.status(400).send({ error: "One or multiple parameters are missing" });
+    }
 
     let newFilm = {        
         FilmTitle: req.body.FilmTitle,
         ReleaseYear: req.body.ReleaseYear,
         FilmLength: req.body.FilmLength
+    };
+
+    try {
+        const createdFilm = await db.films.create(newFilm);
+
+        res.location(`${Utils.getBaseURL(req)}/films/${createdFilm.FilmID}`);
+        
+        return res.status(201).send({ FilmID: createdFilm.FilmID });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send({ error: "An error occurred while creating the film" });
     }
-    const createdFilm = await db.films.create(newFilm);
-    res.status(201)
-        .location(`${Utils.getBaseURL(req)}/films/${createdFilm.FilmID}`)
-        .send(createdFilm.FilmID);
-}
+};
+    
 
 exports.editById = async (req,res) => {
     const film = await getFilm(req, res);
@@ -57,9 +66,9 @@ exports.deleteById = async (req, res) => {
 }
 
 const getFilm = async (req, res) => {
-    const idNumber = parseInt(req.params.FilmID);
+    const idNumber = parseInt(req.params.id);
     if (isNaN(idNumber)) {
-        res.status(400).send({error: `Invalid film ID ${req.params.FilmID}`});
+        res.status(400).send({error: `Invalid film ID ${req.params.id}`});
         return null;
     }
     const film = await db.films.findByPk(idNumber);
