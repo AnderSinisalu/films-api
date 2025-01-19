@@ -36,6 +36,15 @@ module.exports = (sequelize, DataTypes) => {
         }
     );
 
+    User.associate = (models) => {
+        User.belongsToMany(models.Film, {
+            through: models.UserFilm,
+            foreignKey: 'UserID',
+            otherKey: 'FilmID',
+        });
+    };
+    
+
     console.log(User === sequelize.models.User);
     return User;
 }

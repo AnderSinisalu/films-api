@@ -20,6 +20,14 @@ module.exports = (sequelize, DataTypes) => {
         }
     );
 
+    Film.associate = (models) => {
+        Film.belongsToMany(models.User, {
+            through: models.UserFilm,
+            foreignKey: 'FilmID',
+            otherKey: 'UserID',
+        });
+    };    
+
     console.log(Film === sequelize.models.Film);
     return Film;
 }

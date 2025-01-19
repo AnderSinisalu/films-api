@@ -25,6 +25,23 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/UsersView.vue'),
     },
+    {
+      path: '/assignFilm',
+      name: 'assignFilm',
+      component: () => import('../views/AssignFilmView.vue'),
+    },
+    //{
+      //path: '/userFilms/:userId',
+      //name: 'userFilms',
+      //component: () => import('../views/UserFilmsView.vue'),
+      //props: true,
+    //},
+    //{
+      //path: '/filmUsers/:filmId',
+      //name: 'filmUsers',
+      //component: () => import('../views/FilmUsersView.vue'),
+      //props: true,
+    //},
   ],
 })
 
